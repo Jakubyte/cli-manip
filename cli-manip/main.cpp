@@ -1,4 +1,5 @@
-#include "Scene.h"
+#include "Renderer.h"
+#include <Windows.h>
 
 int main()
 {
@@ -22,12 +23,34 @@ int main()
     //    process_input(buffer);
     //}
 
-    char scene[] = {' ', ' ', ' ', '-', '-', '-', '=', '=',  '=', 'J', 'a', 'k', 'u', 'b', '=', '=',
-                    '=', '-', '-', '-', ' ', ' ', ' ', '\n', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-                    ' ', ' ', 'm', 'e', 'n', 'u', ' ', ' ',  ' ', ' ', ' ', ' ', ' ', ' ', ' ', '\0'};
+    std::string main = "___---===+++ JAKUB +++===---___\n          ~~~Main Menu~~~          \n";
+    std::string sub = "+------------+\n|  sub menu  |\n+------------+";
 
-    Scene menus;
-    menus.add("Main", scene, 48);
-    menus.show_scene("Main");
+    Scene scene_holder;
+    scene_holder.add("Main", &main, 69);
+    scene_holder.add("Sub", &sub, 45);
+
+    Renderer renderer(&scene_holder, 60);
+    renderer.draw("Main", true);
+
+    //// press Left Shift key to end program
+    while (!(GetKeyState(VK_ESCAPE) & 0x8000))
+    {
+        if (GetKeyState(VK_LEFT) & 0x8000)
+        {
+            renderer.draw("Main");
+        }
+
+        if (GetKeyState(VK_RIGHT) & 0x8000)
+        {
+            renderer.draw("Sub");
+        }
+
+        if (GetKeyState(VK_ADD) & 0x8000)
+        {
+            main = "___---===+++ JAKUB +++===---___\n          ~~~Changed :D~~~          \n";
+        }
+    }
+
     return 0;
 }

@@ -2,12 +2,13 @@
 #include <Windows.h>
 #include <iostream>
 
-Renderer::Renderer(const std::size_t sz_buffer) : _buffer_size(sz_buffer)
+Renderer::Renderer(Scene *scene, std::size_t ticks) : _scene_holder(scene), _ticks(ticks)
 {
-    for (std::size_t i = 0; i < 256; i++)
-    {
-        vk_keys[i] = 0;
-    }
+}
+
+Renderer::~Renderer()
+{
+    _scene_holder.release();
 }
 
 // https://cplusplus.com/articles/4z18T05o/
@@ -40,41 +41,49 @@ void Renderer::clear()
     SetConsoleCursorPosition(hStdOut, homeCoords);
 }
 
-void Renderer::render(const char *buffer, const std::size_t sz_buffer)
+void Renderer::draw(std::string scene, bool flush = true)
 {
-    std::cout << buffer;
-}
+    current_scene = scene;
+    const std::string *str_scene = *_scene_holder->get_scene(scene)->scene.get();
 
-void Renderer::process_input(char *buffer)
-{
-    for (std::size_t i = 0; i < 256; i++)
+    if (flush)
     {
-        buffer[i] = '0';
-
-        if (GetKeyState(i) & 0x8000)
-        {
-            buffer[i] = '1';
-        }
-    }
-}
-
-void Renderer::swap_buffers(char *prev, char *current, const std::size_t sz_buffer)
-{
-    for (std::size_t i = 0; i < sz_buffer; i++)
-    {
-        prev[i] = current[i];
-    }
-}
-
-bool Renderer::buffer_state_changed(const char *prev, const char *current, const std::size_t sz_buffer)
-{
-    for (std::size_t i = 0; i < sz_buffer; i++)
-    {
-        if (prev[i] != current[i])
-        {
-            return true;
-        }
+        clear();
     }
 
-    return false;
+    std::cout << *str_scene;
 }
+
+// void Renderer::process_input(char *buffer)
+//{
+//     for (std::size_t i = 0; i < 256; i++)
+//     {
+//         buffer[i] = '0';
+//
+//         if (GetKeyState(i) & 0x8000)
+//         {
+//             buffer[i] = '1';
+//         }
+//     }
+// }
+//
+// void Renderer::swap_buffers(char *prev, char *current, const std::size_t sz_buffer)
+//{
+//     for (std::size_t i = 0; i < sz_buffer; i++)
+//     {
+//         prev[i] = current[i];
+//     }
+// }
+//
+// bool Renderer::buffer_state_changed(const char *prev, const char *current, const std::size_t sz_buffer)
+//{
+//     for (std::size_t i = 0; i < sz_buffer; i++)
+//     {
+//         if (prev[i] != current[i])
+//         {
+//             return true;
+//         }
+//     }
+//
+//     return false;
+// }

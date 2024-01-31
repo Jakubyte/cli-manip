@@ -9,14 +9,17 @@ class Scene
   public:
     struct SceneInfo
     {
-        const std::unique_ptr<std::string> scene;
-        const std::size_t size;
+        std::unique_ptr<std::string *> scene;
+        std::size_t size;
     };
 
     Scene();
-    void add(std::string, std::string, std::size_t);
+    ~Scene();
+    void add(std::string, std::string *, std::size_t);
     void remove(std::string);
     void show_scene(std::string);
+    void update_scene(std::string);
+    SceneInfo *get_scene(std::string);
 
   private:
     std::size_t no_scenes;
